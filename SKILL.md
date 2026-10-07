@@ -21,6 +21,10 @@ copied, committed or sent anywhere: it holds their logged-in Threads session.
 3. **One action at a time, on request.** Never loop over posts, users or feeds to like, follow,
    repost or reply in bulk. Bulk automation is spam and gets accounts restricted.
 4. Write the text the user asked for; do not invent claims in their name.
+5. **Speak the user's language, simply.** Many users are not technical and may not read English.
+   Answer in the language they write in, in short plain sentences, without jargon (no "CDP",
+   "headless", "selector"). Say what you will do, show the preview, and ask a clear yes or no
+   question, for example "Vai ficar assim. Posso postar? (sim ou não)".
 
 ## Sign in (once, or when the session drops)
 

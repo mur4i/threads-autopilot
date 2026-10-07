@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.3.0
+
+- Installer and desktop shortcut speak Portuguese when Windows is in Portuguese, with examples of
+  what to type to the AI.
+- The skill tells the agent to answer in the user's language, in plain words.
+
 ## 1.2.0
 
 - Double-click installer (`threads-autopilot-setup.cmd`) on the website: no terminal needed.
