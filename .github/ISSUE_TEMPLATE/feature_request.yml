@@ -1,0 +1,21 @@
+name: Idea
+description: Something the skill should do.
+labels: [enhancement]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What should the agent be able to do?
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Why is it useful?
+  - type: checkboxes
+    id: rules
+    attributes:
+      label: Fits the safety rules
+      options:
+        - label: It is a single action the user asks for, not bulk automation (mass like, follow, reply or scraping).
+          required: true

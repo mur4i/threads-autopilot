@@ -1,0 +1,36 @@
+name: Something broke
+description: A script failed, usually because Threads changed its layout.
+labels: [bug]
+body:
+  - type: input
+    id: script
+    attributes:
+      label: Script and command
+      placeholder: node scripts/post.mjs "hello" --dry
+    validations:
+      required: true
+  - type: textarea
+    id: output
+    attributes:
+      label: Output
+      description: The full error the script printed.
+      render: text
+    validations:
+      required: true
+  - type: textarea
+    id: screenshot
+    attributes:
+      label: Screenshot
+      description: Attach the screenshot the error points to (preview.png, after.png...). Crop out anything private.
+  - type: input
+    id: env
+    attributes:
+      label: Environment
+      placeholder: Windows 11, Chrome 141, Node 22, Threads in Portuguese
+    validations:
+      required: true
+  - type: input
+    id: agent
+    attributes:
+      label: Agent
+      placeholder: Antigravity CLI 1.3, Claude Code, Codex...

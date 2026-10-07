@@ -84,3 +84,14 @@ Both English and Portuguese labels are matched. On failure, open the screenshot 
 to and adjust the selector. `LOGGED OUT` means the session expired or Meta asked for a check: run
 `login.mjs` with the user. If headless gets blocked, `openThreads({ headless: false })` shows the
 browser.
+
+## Send fixes upstream
+
+This skill lives at https://github.com/mur4i/threads-autopilot. After you fix a selector or a
+bug and it works, tell the user and offer to open a pull request there so everyone gets the fix
+(fork, branch, commit only the fix, `gh pr create` filling the template). A pull request is
+public: open it only after the user says yes. If they decline, suggest opening an issue with the
+error and screenshot instead. Never include the browser profile, screenshots with private data
+or the user's posts in a pull request.
+
+Updating: on Windows, run the installer command again; elsewhere, `git pull` in this folder.
