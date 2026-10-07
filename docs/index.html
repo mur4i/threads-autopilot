@@ -25,6 +25,8 @@
   .cmd { display: flex; align-items: flex-start; gap: 8px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 8px 8px 8px 14px; }
   .cmd pre { flex: 1; min-width: 0; margin: 0; padding: 6px 0; overflow-x: auto; font: 14px/1.5 ui-monospace, Consolas, monospace; }
   .copy { flex: none; background: var(--accent); color: #000; border: 0; border-radius: 8px; padding: 6px 12px; font: 600 13px system-ui, sans-serif; cursor: pointer; }
+  .download { display: inline-block; background: var(--accent); color: #000; text-decoration: none; font-weight: 700; font-size: 17px; border-radius: 12px; padding: 12px 20px; margin: 4px 0 16px; }
+  .download:hover { opacity: 0.9; }
   .row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
   .btn { display: inline-block; border: 1px solid var(--line); border-radius: 10px; padding: 8px 14px; text-decoration: none; font-size: 15px; }
   .btn:hover { border-color: var(--muted); }
@@ -62,25 +64,24 @@
     <div><b>agente</b>Postado ✓ threads.com/@voce/post/…</div>
   </div>
 
-  <h2 data-lang="en">Install on Windows (one command)</h2>
-  <h2 data-lang="pt">Instalar no Windows (um comando)</h2>
-  <p data-lang="en">Open <b>PowerShell</b>, paste this and press Enter:</p>
-  <p data-lang="pt">Abra o <b>PowerShell</b>, cole isto e aperte Enter:</p>
-  <div class="cmd"><pre id="win">irm https://raw.githubusercontent.com/mur4i/threads-autopilot/main/install.ps1 | iex</pre><button class="copy" type="button" data-copy="win">Copy</button></div>
+  <h2 data-lang="en">Install on Windows</h2>
+  <h2 data-lang="pt">Instalar no Windows</h2>
+  <a class="download" href="threads-autopilot-setup.cmd" download><span data-lang="en">⬇ Download the installer</span><span data-lang="pt">⬇ Baixar o instalador</span></a>
   <ol data-lang="en">
-    <li>Installs what is missing: Node.js and the Antigravity CLI (<code>agy</code>).</li>
-    <li>Downloads the skill into Antigravity's skills folder.</li>
-    <li>Opens a browser window: sign in to Threads and <b>close the window</b>.</li>
+    <li>Open the downloaded file. If Windows warns you, click <b>More info</b> &gt; <b>Run anyway</b>.</li>
+    <li>Wait while it installs what is missing (Node.js and the Antigravity CLI).</li>
+    <li>A browser window opens: sign in to Threads and <b>close the window</b>.</li>
+    <li>Double-click <b>Threads Autopilot</b> on your desktop and ask it to post something.</li>
   </ol>
   <ol data-lang="pt">
-    <li>Instala o que faltar: Node.js e o Antigravity CLI (<code>agy</code>).</li>
-    <li>Baixa a skill pra pasta de skills do Antigravity.</li>
+    <li>Abra o arquivo baixado. Se o Windows avisar, clique em <b>Mais informações</b> &gt; <b>Executar assim mesmo</b>.</li>
+    <li>Espere ele instalar o que faltar (Node.js e o Antigravity CLI).</li>
     <li>Abre uma janela do navegador: entre no Threads e <b>feche a janela</b>.</li>
+    <li>Dê dois cliques em <b>Threads Autopilot</b> na área de trabalho e peça pra ele postar algo.</li>
   </ol>
-  <p data-lang="en">Then open a new terminal, run <code>agy</code> and ask it to post something.</p>
-  <p data-lang="pt">Depois abra um terminal novo, rode <code>agy</code> e peça pra ele postar algo.</p>
-  <p class="note" data-lang="en">Run the same command again any time to update.</p>
-  <p class="note" data-lang="pt">Rode o mesmo comando de novo quando quiser atualizar.</p>
+  <p class="note" data-lang="en">To update, run the installer again. Prefer the terminal? In PowerShell:</p>
+  <p class="note" data-lang="pt">Pra atualizar, rode o instalador de novo. Prefere o terminal? No PowerShell:</p>
+  <div class="cmd"><pre id="win">irm https://raw.githubusercontent.com/mur4i/threads-autopilot/main/install.ps1 | iex</pre><button class="copy" type="button" data-copy="win">Copy</button></div>
 
   <h2 data-lang="en">macOS / Linux / Claude Code / Codex</h2>
   <h2 data-lang="pt">macOS / Linux / Claude Code / Codex</h2>
