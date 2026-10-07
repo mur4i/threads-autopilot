@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.2.0
+
+- Double-click installer (`threads-autopilot-setup.cmd`) on the website: no terminal needed.
+- The installer adds a **Threads Autopilot** desktop shortcut that opens `agy` ready to use.
+
 ## 1.1.0
 
 - One-command Windows installer (`install.ps1`): installs Node.js and the Antigravity CLI when

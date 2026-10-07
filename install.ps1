@@ -1,6 +1,6 @@
 # threads-autopilot installer for Windows (PowerShell 5.1+).
 # Usage: irm https://raw.githubusercontent.com/mur4i/threads-autopilot/main/install.ps1 | iex
-param([string]$HomeDir = $env:USERPROFILE, [switch]$SkipTools, [switch]$SkipLogin)
+param([string]$HomeDir = $env:USERPROFILE, [switch]$SkipTools, [switch]$SkipLogin, [switch]$NoShortcut)
 
 $ErrorActionPreference = 'Stop'
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
@@ -58,6 +58,42 @@ if (-not $SkipLogin) {
   try { node scripts/login.mjs } finally { Pop-Location }
 }
 
+if (-not $NoShortcut -and (Has 'agy')) {
+  Step 'Creating the desktop shortcut'
+  # Explorer may still hold the old PATH, so the launcher pins where node and agy live.
+  # Paths go through %VARS% so a non-ASCII user name survives cmd's code page.
+  function EnvPath($p) {
+    foreach ($v in 'LOCALAPPDATA', 'APPDATA', 'USERPROFILE', 'ProgramFiles') {
+      $value = [Environment]::GetEnvironmentVariable($v)
+      if ($value -and $p.StartsWith($value, [StringComparison]::OrdinalIgnoreCase)) { return "%$v%" + $p.Substring($value.Length) }
+    }
+    $p
+  }
+  $agy = (Get-Command agy).Source
+  $nodeDir = Split-Path (Get-Command node).Source
+  $launcherDir = Join-Path $HomeDir '.config\threads-autopilot'
+  New-Item -ItemType Directory -Path $launcherDir -Force | Out-Null
+  $launcher = Join-Path $launcherDir 'open-agy.cmd'
+  Set-Content -Path $launcher -Encoding ASCII -Value @(
+    '@echo off',
+    'title Threads Autopilot',
+    "set `"PATH=$(EnvPath $nodeDir);$(EnvPath (Split-Path $agy));%PATH%`"",
+    'cd /d "%~dp0..\.."',
+    'echo Ask anything, for example: post "hello from my agent" on Threads',
+    'echo.',
+    "`"$(EnvPath $agy)`""
+  )
+  $desktop = if ($HomeDir -eq $env:USERPROFILE) { [Environment]::GetFolderPath('Desktop') } else { Join-Path $HomeDir 'Desktop' }
+  New-Item -ItemType Directory -Path $desktop -Force | Out-Null
+  $shortcut = (New-Object -ComObject WScript.Shell).CreateShortcut((Join-Path $desktop 'Threads Autopilot.lnk'))
+  $shortcut.TargetPath = $env:ComSpec
+  $shortcut.Arguments = "/k `"$launcher`""
+  $shortcut.WorkingDirectory = $HomeDir
+  $shortcut.IconLocation = "$agy,0"
+  $shortcut.Save()
+  Write-Host '  "Threads Autopilot" is on your desktop'
+}
+
 Step 'Done'
-Write-Host '  Open a new terminal, run "agy" and ask: post "hello from my agent" on Threads'
+Write-Host '  Double-click "Threads Autopilot" on your desktop and ask: post "hello from my agent" on Threads'
 Write-Host '  The agent shows you a preview and only posts after you say yes.'

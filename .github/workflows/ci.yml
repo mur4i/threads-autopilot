@@ -23,4 +23,4 @@ jobs:
           if ($errors) { $errors; exit 1 }
       - name: Installer dry run (no tools, no login)
         shell: pwsh
-        run: ./install.ps1 -HomeDir "$env:RUNNER_TEMP/home" -SkipTools -SkipLogin
+        run: ./install.ps1 -HomeDir "$env:RUNNER_TEMP/home" -SkipTools -SkipLogin -NoShortcut

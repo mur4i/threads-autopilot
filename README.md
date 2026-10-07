@@ -20,17 +20,17 @@ agent > POSTED https://www.threads.com/@you/post/...
 
 ## Install
 
-### Windows (one command)
+### Windows (no terminal needed)
 
-Open PowerShell and run:
+1. Download [threads-autopilot-setup.cmd](https://mur4i.github.io/threads-autopilot/threads-autopilot-setup.cmd) and open it. If Windows warns you, click **More info** > **Run anyway**.
+2. It installs Node.js and the Antigravity CLI (`agy`) if they are missing, puts the skill in the Antigravity skills folders and opens a browser window: sign in to Threads and close it.
+3. Double-click **Threads Autopilot** on your desktop and ask it to post something.
+
+Run the installer again to update. From a terminal, the same thing is:
 
 ```powershell
 irm https://raw.githubusercontent.com/mur4i/threads-autopilot/main/install.ps1 | iex
 ```
-
-It installs Node.js and the Antigravity CLI (`agy`) if they are missing, puts the skill in the
-Antigravity skills folders, and opens a browser window: sign in to Threads and close it. Then run
-`agy` in a new terminal and ask it to post something. Run the same command again to update.
 
 ### macOS, Linux, or any agent
 
