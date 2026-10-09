@@ -41,6 +41,20 @@ the user to sign in and close the window.
 node scripts/status.mjs        # LOGGED IN | LOGGED OUT
 ```
 
+### More than one account
+
+Each account lives in its own browser profile. Point `THREADS_PROFILE` at a separate folder for the
+second account and use it on every command for that account (login, post, reply, stats):
+
+```bash
+THREADS_PROFILE=~/.config/threads-autopilot/profile-book node scripts/login.mjs
+THREADS_PROFILE=~/.config/threads-autopilot/profile-book node scripts/post.mjs --file post.txt --schedule "10/10 08:00"
+```
+
+Before posting, confirm which account the profile is signed in to (the profile link in the page,
+`/@user`). Two scripts on the **same** profile at the same time fail with "Chrome did not answer";
+different profiles can run side by side.
+
 ## Post
 
 ```bash
