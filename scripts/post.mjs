@@ -50,6 +50,18 @@ async function run() {
   console.log('draft ready: ' + preview)
   if (dry) return
 
+  // Threads answers the schedule mutation with data null when it did not store the post: watch for it.
+  let scheduleResult
+  if (when) {
+    await browser.send('Network.enable')
+    const ids = new Set()
+    browser.on('Network.requestWillBeSent', (p) => { if (/useTHSchedulePost/.test(p.request.postData || '')) ids.add(p.requestId) })
+    browser.on('Network.loadingFinished', async (p) => {
+      if (!ids.has(p.requestId)) return
+      const r = await browser.send('Network.getResponseBody', { requestId: p.requestId }).catch(() => null)
+      scheduleResult = r?.body || ''
+    })
+  }
   // With a schedule set, the composer's main button reads "Programar" / "Schedule" instead of "Post".
   const button = `[...(${dialog}).querySelectorAll('[role=button], button')].find((b) => /^(Post|Postar|Publicar|Programar|Agendar|Schedule)$/i.test(b.innerText.trim()) && b.getAttribute('aria-disabled') !== 'true')`
   if (!(await clickElement(browser, button))) throw new Error('Post button not found, see ' + preview)
@@ -67,6 +79,9 @@ async function run() {
   }
   const after = await browser.screenshot(path.join(OUT, 'after.png'))
   if (!closed) throw new Error('composer did not close after posting, see ' + after)
+  if (when && !/"xdt_text_app_schedule_draft":\{/.test(scheduleResult || '')) {
+    throw new Error('Threads did not accept the schedule (answer: ' + (scheduleResult || 'none').slice(0, 120) + '); nothing was scheduled, see ' + after)
+  }
   if (when) console.log('SCHEDULED ' + when.toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' }) + ' | ' + after)
   else console.log('POSTED' + (link ? ' ' + link : '') + ' | ' + after)
 }

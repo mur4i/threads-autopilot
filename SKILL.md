@@ -75,8 +75,14 @@ characters (checked before opening the browser).
 composer's More menu > Schedule, picks the day and time and clicks Schedule instead of Post, so
 Threads publishes it by itself: the computer can be off and no agent has to wait. Output:
 `SCHEDULED <date> | after.png`. With `--dry` the preview shows the "Will be posted on..." banner.
-Scheduled posts are listed and can be cancelled in the Threads app. Prefer scheduling over keeping
-an agent awake to post later.
+Scheduled posts are listed and can be cancelled in the Threads app.
+
+**Check the answer.** The web composer closes even when Threads refuses the schedule: the
+`useTHSchedulePost` mutation then returns `xdt_text_app_schedule_draft: null` and nothing is stored.
+`post.mjs` watches that answer and fails with "Threads did not accept the schedule" instead of
+printing `SCHEDULED`. Since October 2026 the web schedule has been refused this way; when it fails,
+post at the right time instead (a small loop that sleeps and calls `post.mjs`) and tell the user the
+computer has to stay on.
 
 ## Reply
 

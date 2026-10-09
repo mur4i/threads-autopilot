@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.5.1
+
+- `post.mjs --schedule` checks Threads' answer and fails when the schedule was not stored, instead
+  of printing `SCHEDULED` for a post that never goes out.
+
 ## 1.5.0
 
 - `stats.mjs` reads views, likes, replies and reposts of a post, or of a profile's recent posts.
