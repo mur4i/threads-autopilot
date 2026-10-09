@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.5.0
+
+- `stats.mjs` reads views, likes, replies and reposts of a post, or of a profile's recent posts.
+
 ## 1.4.0
 
 - `post.mjs --schedule "DD/MM HH:MM"` schedules the post on Threads itself, so it goes out with the

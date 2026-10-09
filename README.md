@@ -58,6 +58,7 @@ The agent runs these for you; see [SKILL.md](SKILL.md) for the details it follow
 | `status.mjs` | `LOGGED IN` or `LOGGED OUT` |
 | `post.mjs "text" [--image file] [--schedule "DD/MM HH:MM"] [--dry]` | Posts text, optionally with one image, now or scheduled on Threads |
 | `reply.mjs <url or @user> "text" [--dry]` | Replies to a post, or to someone's latest post |
+| `stats.mjs <url or @user> [--since DD/MM] [--limit N]` | Views, likes, replies and reposts of a post or of recent posts |
 | `interact.mjs <url> --like --repost` | Likes and/or reposts a post |
 
 ## How it works

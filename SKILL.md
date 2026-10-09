@@ -76,6 +76,19 @@ Prints the target post's text first (show it to the user), types into the "Reply
 saves `reply-preview.png`, clicks the send arrow and waits until the reply shows up and the
 "Posting..." toast is gone. A thread of your own is just several replies to your root post.
 
+## Stats
+
+```bash
+node scripts/stats.mjs <post url>                          # one post
+node scripts/stats.mjs @user --since 08/10 --limit 30      # recent posts of a profile
+node scripts/stats.mjs @user --json stats.json             # also save the numbers
+```
+
+Prints, per post: date, views, likes, replies, reposts, shares and the start of the text. Views
+come from the "N views" line on the post page, the rest from the action bar. Replies the account
+made on its own posts are skipped in profile mode. Use it to see which posts are gaining reach
+(for example, before replying with a link) and to compare formats.
+
 ## Like and repost
 
 ```bash
