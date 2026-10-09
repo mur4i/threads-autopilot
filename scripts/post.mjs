@@ -11,12 +11,13 @@ const flag = (name) => {
 const dry = argv.includes('--dry')
 const file = flag('--file')
 const image = flag('--image') && path.resolve(flag('--image'))
-const values = new Set([file, flag('--image')])
+const values = new Set([file, flag('--image'), flag('--schedule')])
 const text = file ? fs.readFileSync(file, 'utf8').trim() : argv.find((a) => !a.startsWith('--') && !values.has(a))
 if (!text) {
-  console.error('usage: node scripts/post.mjs "text" | --file post.txt  [--image photo.jpg] [--dry]')
+  console.error('usage: node scripts/post.mjs "text" | --file post.txt  [--image photo.jpg] [--schedule "DD/MM HH:MM"] [--dry]')
   process.exit(1)
 }
+const when = flag('--schedule') && parseWhen(flag('--schedule'))
 if (image && !fs.existsSync(image)) {
   console.error('image not found: ' + image)
   process.exit(1)
@@ -43,12 +44,14 @@ async function run() {
     if (!ready) await sleep(750)
   }
   if (ready && image) await attachImage()
+  if (ready && when) await pickSchedule()
   const preview = await browser.screenshot(path.join(OUT, 'preview.png'))
   if (!ready) throw new Error('composer did not open, see ' + preview)
   console.log('draft ready: ' + preview)
   if (dry) return
 
-  const button = `[...(${dialog}).querySelectorAll('[role=button], button')].find((b) => /^(Post|Postar|Publicar)$/i.test(b.innerText.trim()) && b.getAttribute('aria-disabled') !== 'true')`
+  // With a schedule set, the composer's main button reads "Programar" / "Schedule" instead of "Post".
+  const button = `[...(${dialog}).querySelectorAll('[role=button], button')].find((b) => /^(Post|Postar|Publicar|Programar|Agendar|Schedule)$/i.test(b.innerText.trim()) && b.getAttribute('aria-disabled') !== 'true')`
   if (!(await clickElement(browser, button))) throw new Error('Post button not found, see ' + preview)
 
   let closed = false
@@ -64,7 +67,61 @@ async function run() {
   }
   const after = await browser.screenshot(path.join(OUT, 'after.png'))
   if (!closed) throw new Error('composer did not close after posting, see ' + after)
-  console.log('POSTED' + (link ? ' ' + link : '') + ' | ' + after)
+  if (when) console.log('SCHEDULED ' + when.toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' }) + ' | ' + after)
+  else console.log('POSTED' + (link ? ' ' + link : '') + ' | ' + after)
+}
+
+// Accepts "DD/MM HH:MM", "DD/MM/YYYY HH:MM" or "YYYY-MM-DD HH:MM", in local time.
+function parseWhen(value) {
+  const m = value.match(/^(\d{1,2})\/(\d{1,2})(?:\/(\d{4}))?\s+(\d{1,2}):(\d{2})$/) || value.match(/^(\d{4})-(\d{1,2})-(\d{1,2})[ T](\d{1,2}):(\d{2})$/)
+  if (!m) {
+    console.error('--schedule: use "DD/MM HH:MM", "DD/MM/YYYY HH:MM" or "YYYY-MM-DD HH:MM"')
+    process.exit(1)
+  }
+  const [day, month, year] = value.includes('/') ? [+m[1], +m[2], +(m[3] || new Date().getFullYear())] : [+m[3], +m[2], +m[1]]
+  const date = new Date(year, month - 1, day, +m[4], +m[5])
+  if (date.getDate() !== day || date <= new Date()) {
+    console.error('--schedule: invalid or past date: ' + value)
+    process.exit(1)
+  }
+  return date
+}
+
+// Composer "More" menu > "Schedule...": a month calendar, hour and minute fields, then "Done".
+async function pickSchedule() {
+  const more = `[...(${dialog}).querySelectorAll('[role=button][aria-label]')].find((e) => /^(Mais|More)$/.test(e.getAttribute('aria-label')))`
+  if (!(await clickElement(browser, more))) throw new Error('composer menu not found')
+  await sleep(1200)
+  const item = `[...document.querySelectorAll('[role=menuitem], [role=menu] [role=button]')].find((e) => /^(Programar|Agendar|Schedule)/i.test(e.innerText.trim()))`
+  if (!(await clickElement(browser, item))) throw new Error('"Schedule" option not found in the composer menu')
+  await sleep(1500)
+
+  const picker = `(() => { let p = document.querySelector('[role=grid]'); while (p && !p.querySelector('input')) p = p.parentElement; return p })()`
+  const months = (locale) => new Intl.DateTimeFormat(locale, { month: 'long' }).format(when).toLowerCase()
+  const [pt, en, year] = [months('pt-BR'), months('en-US'), String(when.getFullYear())]
+  for (let i = 0; i < 13; i++) {
+    const title = (await browser.evaluate(`(${picker})?.querySelector('[role=status]')?.innerText.toLowerCase() || ''`))
+    if (title.includes(year) && (title.includes(pt) || title.includes(en))) break
+    if (i === 12 || !(await clickElement(browser, `(${picker}).querySelector('button[aria-label="Próximo mês"], button[aria-label="Next month"]')`))) throw new Error('month not reachable in the calendar: ' + title)
+    await sleep(500)
+  }
+  const d = when.getDate()
+  const cell = `[...(${picker}).querySelectorAll('[role=gridcell]')].find((c) => c.getAttribute('aria-disabled') !== 'true' && new RegExp('\\\\b(${d} de ${pt}|${en} ${d})\\\\b', 'i').test(c.innerText))`
+  if (!(await clickElement(browser, cell))) throw new Error(`day ${d} not selectable in the calendar`)
+  await sleep(500)
+
+  const pad = (n) => String(n).padStart(2, '0')
+  for (const [index, value] of [[0, pad(when.getHours())], [1, pad(when.getMinutes())]]) {
+    if (!(await clickElement(browser, `(${picker}).querySelectorAll('input')[${index}]`))) throw new Error('time field not found')
+    for (const type of ['keyDown', 'keyUp']) await browser.send('Input.dispatchKeyEvent', { type, key: 'a', code: 'KeyA', windowsVirtualKeyCode: 65, modifiers: 2 })
+    await browser.send('Input.insertText', { text: value })
+    await sleep(300)
+  }
+  const time = await browser.evaluate(`[...(${picker}).querySelectorAll('input')].map((i) => i.value.padStart(2, '0')).join(':')`)
+  if (time !== `${pad(when.getHours())}:${pad(when.getMinutes())}`) throw new Error(`time field shows ${time}, expected ${pad(when.getHours())}:${pad(when.getMinutes())}`)
+
+  if (!(await clickElement(browser, `[...(${picker}).querySelectorAll('[role=button], button')].find((b) => /^(Concluir|Done)$/i.test(b.innerText.trim()))`))) throw new Error('"Done" button not found in the schedule picker')
+  await sleep(1000)
 }
 
 async function attachImage() {

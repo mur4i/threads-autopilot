@@ -56,7 +56,7 @@ The agent runs these for you; see [SKILL.md](SKILL.md) for the details it follow
 | --- | --- |
 | `login.mjs` | Opens a browser window so you can sign in; saves the session |
 | `status.mjs` | `LOGGED IN` or `LOGGED OUT` |
-| `post.mjs "text" [--image file] [--dry]` | Posts text, optionally with one image |
+| `post.mjs "text" [--image file] [--schedule "DD/MM HH:MM"] [--dry]` | Posts text, optionally with one image, now or scheduled on Threads |
 | `reply.mjs <url or @user> "text" [--dry]` | Replies to a post, or to someone's latest post |
 | `interact.mjs <url> --like --repost` | Likes and/or reposts a post |
 

@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.4.0
+
+- `post.mjs --schedule "DD/MM HH:MM"` schedules the post on Threads itself, so it goes out with the
+  computer off and no agent waiting.
+
 ## 1.3.0
 
 - Installer and desktop shortcut speak Portuguese when Windows is in Portuguese, with examples of

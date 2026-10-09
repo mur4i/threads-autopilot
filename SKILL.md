@@ -48,6 +48,7 @@ node scripts/post.mjs "text" --dry                 # open the composer and take 
 node scripts/post.mjs "text"                       # post
 node scripts/post.mjs --file post.txt              # text from a file (multi-line)
 node scripts/post.mjs "text" --image photo.jpg     # with one image (png or jpg)
+node scripts/post.mjs "text" --schedule "09/10 19:00"   # schedule it on Threads (local time)
 ```
 
 Opens `threads.com/intent/post?text=...` headless, waits for the composer, attaches the image
@@ -55,6 +56,13 @@ through the composer's file input, saves `preview.png`, clicks Post and waits fo
 close. Output: `POSTED <link from the "Posted / View" toast> | after.png`. Screenshots go to
 `<tmp>/threads-autopilot` (override with `THREADS_OUT`); open them to check. Limit: 500
 characters (checked before opening the browser).
+
+`--schedule` takes `DD/MM HH:MM`, `DD/MM/YYYY HH:MM` or `YYYY-MM-DD HH:MM` in local time. It opens the
+composer's More menu > Schedule, picks the day and time and clicks Schedule instead of Post, so
+Threads publishes it by itself: the computer can be off and no agent has to wait. Output:
+`SCHEDULED <date> | after.png`. With `--dry` the preview shows the "Will be posted on..." banner.
+Scheduled posts are listed and can be cancelled in the Threads app. Prefer scheduling over keeping
+an agent awake to post later.
 
 ## Reply
 
