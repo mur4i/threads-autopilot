@@ -55,6 +55,7 @@ async function statsOf(url) {
 
 async function profilePosts(user) {
   await goto(browser, `${SITE}/@${user}`, 7000)
+  followers = await browser.evaluate(`document.body.innerText.match(/([\\d.,]+(?:\\s*(?:mil|mi|k|m))?)\\s+(?:seguidores|followers)/i)?.[1] || ''`)
   const found = new Map()
   for (let i = 0; i < 30 && found.size < limit * 2; i++) {
     const batch = await browser.evaluate(`[...document.querySelectorAll('a[href^="/@${user}/post/"] time[datetime]')].map((t) => [t.closest('a').getAttribute('href').split('?')[0], t.getAttribute('datetime')])`)
@@ -73,6 +74,7 @@ async function profilePosts(user) {
 
 const browser = await openThreads()
 const rows = []
+let followers = ''
 try {
   const urls = target.startsWith('@') ? (await profilePosts(target.slice(1))).map((p) => p.url) : [target]
   for (const url of urls) {
@@ -83,6 +85,7 @@ try {
   await browser.close()
 }
 
+if (followers) console.log(`${target}: ${parseCount(followers)} followers`)
 for (const r of rows) {
   const when = r.time ? new Date(r.time).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }) : '?'
   console.log(`${when} | ${String(r.views).padStart(6)} views | ${r.likes} likes | ${r.replies} replies | ${r.reposts} reposts | ${r.shares} shares | ${r.text}`)
