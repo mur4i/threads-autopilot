@@ -130,7 +130,12 @@ node scripts/queue.mjs 1.txt 2.txt 3.txt --gap 5-15 --start 19:00
 Posts the files in order with a random gap in minutes (never on the dot, which looks automated)
 and, with `--start`, waits until that local time plus a few random minutes. Prints one
 `POSTED <link>` or `FAILED` line per file and retries once only when Chrome did not open (any
-later failure might mean it was posted). It runs until the last post, so start it detached
+later failure might mean it was posted).
+
+Pass a **folder** instead of files to queue every `.txt` in it. A name with a time (`1230.txt`,
+`2-2005.txt`) goes out at that time; a late one still waits the random gap after the previous post,
+so a restart never fires several posts at once. Each file is moved to `done/` before it is posted
+(`done/x.txt.failed` when it failed), so two runners on the same folder never post it twice. It runs until the last post, so start it detached
 (`nohup ... &`) and keep the computer on. Only queue texts the user approved.
 
 ## Like and repost

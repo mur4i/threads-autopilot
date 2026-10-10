@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.6.1
+
+- `queue.mjs <folder>` posts each file at the time in its name (`2005.txt`), keeps the random gap when
+  late instead of bursting, and moves each file to `done/` first so two runners never post it twice.
+- `reply.mjs` reloads the post once before reporting that it could not confirm the reply.
+
 ## 1.6.0
 
 - `comments.mjs` lists the replies under a post, most liked first.

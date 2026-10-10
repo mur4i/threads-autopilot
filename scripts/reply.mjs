@@ -63,6 +63,11 @@ async function run() {
     // The "Posting..." toast means the upload is still running; closing Chrome then can lose the reply.
     ok = (await browser.evaluate(`!(${box})?.innerText.trim() && !/Posting|Postando/.test(document.body.innerText)`)) && (await browser.evaluate(posted))
   }
+  // The reply list does not always refresh in place: reload once before calling it a failure.
+  if (!ok && !(await browser.evaluate(`/Posting|Postando/.test(document.body.innerText)`))) {
+    await goto(browser, url, 6000)
+    ok = await browser.evaluate(`document.body.innerText.includes(${JSON.stringify(text.slice(0, 40))})`)
+  }
   const after = await browser.screenshot(path.join(OUT, 'reply-after.png'))
   if (!ok) throw new Error('could not confirm the reply was posted, see ' + after)
   console.log('REPLIED ' + url + ' | ' + after)
