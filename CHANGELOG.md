@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.6.0
+
+- `comments.mjs` lists the replies under a post, most liked first.
+- `queue.mjs` posts several texts with a random gap (default 5 to 15 min) and an optional start
+  time, retrying once when Chrome did not open.
+- `stats.mjs @user` also prints the profile's follower count.
+
 ## 1.5.1
 
 - `post.mjs --schedule` checks Threads' answer and fails when the schedule was not stored, instead

@@ -109,6 +109,30 @@ come from the "N views" line on the post page, the rest from the action bar. Rep
 made on its own posts are skipped in profile mode. Use it to see which posts are gaining reach
 (for example, before replying with a link) and to compare formats.
 
+Profile mode also prints the follower count first (`@user: N followers`).
+
+## Comments
+
+```bash
+node scripts/comments.mjs <post url> --limit 30
+```
+
+Lists the replies under a post (author, age, likes, text, link), most liked first, skipping the
+account's own. Use it to pick a few to answer with `reply.mjs <reply link> "text"`, each one shown
+to the user first. Answering early commenters keeps the post in the feed longer.
+
+## Queue
+
+```bash
+node scripts/queue.mjs 1.txt 2.txt 3.txt --gap 5-15 --start 19:00
+```
+
+Posts the files in order with a random gap in minutes (never on the dot, which looks automated)
+and, with `--start`, waits until that local time plus a few random minutes. Prints one
+`POSTED <link>` or `FAILED` line per file and retries once only when Chrome did not open (any
+later failure might mean it was posted). It runs until the last post, so start it detached
+(`nohup ... &`) and keep the computer on. Only queue texts the user approved.
+
 ## Like and repost
 
 ```bash
