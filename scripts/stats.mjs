@@ -60,8 +60,9 @@ async function profilePosts(user) {
   for (let i = 0; i < 30 && found.size < limit * 2; i++) {
     const batch = await browser.evaluate(`[...document.querySelectorAll('a[href^="/@${user}/post/"] time[datetime]')].map((t) => [t.closest('a').getAttribute('href').split('?')[0], t.getAttribute('datetime')])`)
     for (const [href, at] of batch) found.set(href.replace(/\/media$/, ''), at)
-    const oldest = Math.min(...[...found.values()].map(Date.parse))
-    if (since && oldest < since.getTime()) break
+    // Judge by the bottom of the feed: a pinned post on top is old and must not stop the scroll.
+    const bottom = Date.parse(batch.at(-1)?.[1] || '')
+    if (since && bottom < since.getTime()) break
     await browser.evaluate('window.scrollBy(0, 2500)')
     await sleep(1500)
   }
