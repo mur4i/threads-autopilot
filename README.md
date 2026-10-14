@@ -60,6 +60,7 @@ The agent runs these for you; see [SKILL.md](SKILL.md) for the details it follow
 | `reply.mjs <url or @user> "text" [--dry]` | Replies to a post, or to someone's latest post |
 | `stats.mjs <url or @user> [--since DD/MM] [--limit N]` | Views, likes, replies and reposts of a post or of recent posts, plus the follower count |
 | `comments.mjs <url> [--limit N]` | Replies under a post, most liked first, to pick which ones to answer |
+| `activity.mjs [--limit N] [--json out.json]` | Newest replies left on any of your posts, from the Activity page |
 | `queue.mjs a.txt b.txt ... [--gap 5-15] [--start HH:MM]` | Posts several texts in a row with a random gap, from a start time |
 | `interact.mjs <url> --like --repost` | Likes and/or reposts a post |
 | `delete.mjs <url> [--dry]` | Deletes one of your own posts |

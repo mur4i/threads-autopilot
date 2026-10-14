@@ -123,6 +123,14 @@ Lists the replies under a post (author, age, likes, text, link), most liked firs
 account's own. Use it to pick a few to answer with `reply.mjs <reply link> "text"`, each one shown
 to the user first. Answering early commenters keeps the post in the feed longer.
 
+```bash
+node scripts/activity.mjs --limit 30 [--json out.json]
+```
+
+Lists the newest replies left on any of the account's posts (Activity > Replies): time, author,
+reply text, the post it answers and the reply's link, so new comments are found in one page load
+instead of opening every post. Answer them with `reply.mjs <reply link>`.
+
 ## Queue
 
 ```bash

@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.10.0
+
+- `activity.mjs` lists the newest replies left on any of your posts (Activity > Replies), with the
+  reply text, the post it answers and the link to answer it.
+
 ## 1.9.0
 
 - `delete.mjs <url> [--dry]` deletes one of your own posts; `--dry` stops at the confirm dialog.
