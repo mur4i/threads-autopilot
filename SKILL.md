@@ -171,6 +171,15 @@ node scripts/interact.mjs <post url> --like --repost
 
 Acts on the main post of the page and skips what is already done.
 
+## Delete a post
+
+```bash
+node scripts/delete.mjs <post url> [--dry]
+```
+
+Only your own post, only with the user's word: it cannot be undone. `--dry` stops at the confirm
+dialog and saves a screenshot. Prints `DELETED <url>`.
+
 ## When it breaks
 
 Threads changes its markup. The selectors are few and documented in the scripts:

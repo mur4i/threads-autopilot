@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.9.0
+
+- `delete.mjs <url> [--dry]` deletes one of your own posts; `--dry` stops at the confirm dialog.
+
 ## 1.8.0
 
 - `post.mjs --topic "Name"` tags the post with one topic through the composer's "Community or

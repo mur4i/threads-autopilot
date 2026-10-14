@@ -62,6 +62,7 @@ The agent runs these for you; see [SKILL.md](SKILL.md) for the details it follow
 | `comments.mjs <url> [--limit N]` | Replies under a post, most liked first, to pick which ones to answer |
 | `queue.mjs a.txt b.txt ... [--gap 5-15] [--start HH:MM]` | Posts several texts in a row with a random gap, from a start time |
 | `interact.mjs <url> --like --repost` | Likes and/or reposts a post |
+| `delete.mjs <url> [--dry]` | Deletes one of your own posts |
 
 ## How it works
 
