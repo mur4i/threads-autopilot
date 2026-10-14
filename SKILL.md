@@ -62,11 +62,12 @@ node scripts/post.mjs "text" --dry                 # open the composer and take 
 node scripts/post.mjs "text"                       # post
 node scripts/post.mjs --file post.txt              # text from a file (multi-line)
 node scripts/post.mjs "text" --image photo.jpg     # with one image (png or jpg)
+node scripts/post.mjs "text" --image 1.png,2.png,3.png   # carousel, in order (up to 20)
 node scripts/post.mjs "text" --schedule "09/10 19:00"   # schedule it on Threads (local time)
 ```
 
-Opens `threads.com/intent/post?text=...` headless, waits for the composer, attaches the image
-through the composer's file input, saves `preview.png`, clicks Post and waits for the dialog to
+Opens `threads.com/intent/post?text=...` headless, waits for the composer, attaches the images
+through the composer's file input (all at once, in the given order), saves `preview.png`, clicks Post and waits for the dialog to
 close. Output: `POSTED <link from the "Posted / View" toast> | after.png`. Screenshots go to
 `<tmp>/threads-autopilot` (override with `THREADS_OUT`); open them to check. Limit: 500
 characters (checked before opening the browser).

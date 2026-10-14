@@ -1,4 +1,4 @@
-// Posts on Threads through the composer intent (text, optional image); --dry stops before clicking Post.
+// Posts on Threads through the composer intent (text, optional images); --dry stops before clicking Post.
 import fs from 'node:fs'
 import path from 'node:path'
 import { openThreads, isLoggedIn, goto, clickElement, checkLength, sleep, SITE, OUT } from './threads.mjs'
@@ -10,16 +10,23 @@ const flag = (name) => {
 }
 const dry = argv.includes('--dry')
 const file = flag('--file')
-const image = flag('--image') && path.resolve(flag('--image'))
-const values = new Set([file, flag('--image'), flag('--schedule')])
+// --image repeats (or takes a comma list) for a carousel, in order.
+const imageArgs = argv.flatMap((a, i) => (argv[i - 1] === '--image' ? [a] : []))
+const images = imageArgs.flatMap((a) => a.split(',')).filter(Boolean).map((p) => path.resolve(p))
+const values = new Set([file, ...imageArgs, flag('--schedule')])
 const text = file ? fs.readFileSync(file, 'utf8').trim() : argv.find((a) => !a.startsWith('--') && !values.has(a))
 if (!text) {
-  console.error('usage: node scripts/post.mjs "text" | --file post.txt  [--image photo.jpg] [--schedule "DD/MM HH:MM"] [--dry]')
+  console.error('usage: node scripts/post.mjs "text" | --file post.txt  [--image photo.jpg ...] [--schedule "DD/MM HH:MM"] [--dry]')
   process.exit(1)
 }
 const when = flag('--schedule') && parseWhen(flag('--schedule'))
-if (image && !fs.existsSync(image)) {
+for (const image of images) {
+  if (fs.existsSync(image)) continue
   console.error('image not found: ' + image)
+  process.exit(1)
+}
+if (images.length > 20) {
+  console.error('Threads takes up to 20 images per post')
   process.exit(1)
 }
 checkLength(text)
@@ -43,7 +50,7 @@ async function run() {
     ready = await browser.evaluate(`!!(${dialog})`)
     if (!ready) await sleep(750)
   }
-  if (ready && image) await attachImage()
+  if (ready && images.length) await attachImages()
   if (ready && when) await pickSchedule()
   const preview = await browser.screenshot(path.join(OUT, 'preview.png'))
   if (!ready) throw new Error('composer did not open, see ' + preview)
@@ -139,15 +146,17 @@ async function pickSchedule() {
   await sleep(1000)
 }
 
-async function attachImage() {
+async function attachImages() {
   const { result } = await browser.send('Runtime.evaluate', {
     expression: `(${dialog}).querySelector('input[type=file]') || document.querySelector('input[type=file][accept*=image]')`,
   })
   if (!result?.objectId) throw new Error('image input not found in the composer')
-  await browser.send('DOM.setFileInputFiles', { files: [image], objectId: result.objectId })
-  for (let i = 0; i < 30; i++) {
+  await browser.send('DOM.setFileInputFiles', { files: images, objectId: result.objectId })
+  let shown = 0
+  for (let i = 0; i < 40 + images.length * 10; i++) {
     await sleep(500)
-    if (await browser.evaluate(`!!(${dialog}).querySelector('img[src^="blob:"], video[src^="blob:"]')`)) return
+    shown = await browser.evaluate(`(${dialog}).querySelectorAll('img[src^="blob:"], video[src^="blob:"]').length`)
+    if (shown >= images.length) return
   }
-  throw new Error('image did not show up in the composer')
+  throw new Error(`only ${shown} of ${images.length} images showed up in the composer`)
 }

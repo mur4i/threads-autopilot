@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.7.0
+
+- `post.mjs --image` takes several images (comma list or repeated flag) and posts them as a
+  carousel, in order, up to 20.
+
 ## 1.6.1
 
 - `stats.mjs @user --since` no longer stops at the pinned post: it judges the date by the bottom of the feed.
