@@ -13,10 +13,11 @@ const file = flag('--file')
 // --image repeats (or takes a comma list) for a carousel, in order.
 const imageArgs = argv.flatMap((a, i) => (argv[i - 1] === '--image' ? [a] : []))
 const images = imageArgs.flatMap((a) => a.split(',')).filter(Boolean).map((p) => path.resolve(p))
-const values = new Set([file, ...imageArgs, flag('--schedule')])
+const topic = flag('--topic')
+const values = new Set([file, ...imageArgs, flag('--schedule'), topic])
 const text = file ? fs.readFileSync(file, 'utf8').trim() : argv.find((a) => !a.startsWith('--') && !values.has(a))
 if (!text) {
-  console.error('usage: node scripts/post.mjs "text" | --file post.txt  [--image photo.jpg ...] [--schedule "DD/MM HH:MM"] [--dry]')
+  console.error('usage: node scripts/post.mjs "text" | --file post.txt  [--image photo.jpg ...] [--topic "Família"] [--schedule "DD/MM HH:MM"] [--dry]')
   process.exit(1)
 }
 const when = flag('--schedule') && parseWhen(flag('--schedule'))
@@ -50,6 +51,7 @@ async function run() {
     ready = await browser.evaluate(`!!(${dialog})`)
     if (!ready) await sleep(750)
   }
+  if (ready && topic) await pickTopic()
   if (ready && images.length) await attachImages()
   if (ready && when) await pickSchedule()
   const preview = await browser.screenshot(path.join(OUT, 'preview.png'))
@@ -107,6 +109,24 @@ function parseWhen(value) {
     process.exit(1)
   }
   return date
+}
+
+// The composer's "Community or topic" field: type it and pick the matching suggestion (exact name first).
+async function pickTopic() {
+  const input = `(${dialog}).querySelector('input[placeholder="Comunidade ou tópico"], input[aria-label="Comunidade ou tópico"], input[placeholder="Community or topic"], input[aria-label="Community or topic"]')`
+  if (!(await clickElement(browser, input))) throw new Error('topic field not found in the composer')
+  await sleep(600)
+  await browser.send('Input.insertText', { text: topic })
+  const want = JSON.stringify(topic.toLowerCase())
+  const option = `(() => { const o = [...document.querySelectorAll('[role=listbox] [role=option]')]; return o.find((e) => e.innerText.trim().toLowerCase() === ${want}) || o[0] })()`
+  let shown = false
+  for (let i = 0; i < 16 && !shown; i++) {
+    await sleep(500)
+    shown = await browser.evaluate(`!!${option}`)
+  }
+  if (!shown || !(await clickElement(browser, option))) throw new Error(`no suggestion for topic "${topic}"`)
+  await sleep(800)
+  if (await browser.evaluate(`!!document.querySelector('[role=listbox] [role=option]')`)) throw new Error(`topic "${topic}" was not picked`)
 }
 
 // Composer "More" menu > "Schedule...": a month calendar, hour and minute fields, then "Done".

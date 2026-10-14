@@ -64,6 +64,7 @@ node scripts/post.mjs --file post.txt              # text from a file (multi-lin
 node scripts/post.mjs "text" --image photo.jpg     # with one image (png or jpg)
 node scripts/post.mjs "text" --image 1.png,2.png,3.png   # carousel, in order (up to 20)
 node scripts/post.mjs "text" --schedule "09/10 19:00"   # schedule it on Threads (local time)
+node scripts/post.mjs "text" --topic "Família"     # tag one topic (the composer's "Community or topic" field)
 ```
 
 Opens `threads.com/intent/post?text=...` headless, waits for the composer, attaches the images
@@ -138,6 +139,29 @@ Pass a **folder** instead of files to queue every `.txt` in it. A name with a ti
 so a restart never fires several posts at once. Each file is moved to `done/` before it is posted
 (`done/x.txt.failed` when it failed), so two runners on the same folder never post it twice. It runs until the last post, so start it detached
 (`nohup ... &`) and keep the computer on. Only queue texts the user approved.
+
+## Reach: what the ranking rewards
+
+Meta publishes no weights for Threads; this is what is stated by Meta or Adam Mosseri, then what
+practitioners report and what measured runs with these scripts showed. See
+[docs/reach.md](docs/reach.md) for sources and details. Use it to advise the user, not to override
+their choices.
+
+- **Confirmed:** an AI model ranks each candidate post by predicted interest; Following is
+  chronological; since late 2024 ranking leans toward accounts the viewer follows. Replies count
+  about as much as posts (Mosseri). Original text ranks above recycled text.
+- **Topic tag:** one per post (`--topic`) places it in that topic's feed. Pick an existing topic
+  with an audience; it costs nothing.
+- **Links:** Mosseri said in 2025 that link posts were fixed and perform better; a bare link with
+  no thought still underperforms. Putting the link in a later reply keeps the main post clean.
+- **Early reaction decides reach:** a post that gets replies and likes in its first hour is shown
+  to more people; one that does not is capped and rarely recovers.
+- **Frequency:** no confirmed penalty for volume. Guides suggest 1 to 5 posts a day. Measured: at a
+  post every 10 to 20 min (about 90 a day) most posts got 30 to 300 views and about one in 30 broke
+  out, so volume buys lottery tickets but splits the early audience between posts.
+- **What broke out in measured runs:** first person, one concrete object, a short line on its own
+  near the end, a physical gesture as the ending. Third person with invented names stayed under 200
+  views; posts that open with a label ("Part 1.") sank.
 
 ## Like and repost
 

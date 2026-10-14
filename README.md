@@ -56,7 +56,7 @@ The agent runs these for you; see [SKILL.md](SKILL.md) for the details it follow
 | --- | --- |
 | `login.mjs` | Opens a browser window so you can sign in; saves the session |
 | `status.mjs` | `LOGGED IN` or `LOGGED OUT` |
-| `post.mjs "text" [--image a.png,b.png] [--schedule "DD/MM HH:MM"] [--dry]` | Posts text, optionally with one image or a carousel, now or scheduled on Threads |
+| `post.mjs "text" [--image a.png,b.png] [--topic "Name"] [--schedule "DD/MM HH:MM"] [--dry]` | Posts text, optionally with one image or a carousel and a topic tag, now or scheduled on Threads |
 | `reply.mjs <url or @user> "text" [--dry]` | Replies to a post, or to someone's latest post |
 | `stats.mjs <url or @user> [--since DD/MM] [--limit N]` | Views, likes, replies and reposts of a post or of recent posts, plus the follower count |
 | `comments.mjs <url> [--limit N]` | Replies under a post, most liked first, to pick which ones to answer |

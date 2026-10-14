@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.8.0
+
+- `post.mjs --topic "Name"` tags the post with one topic through the composer's "Community or
+  topic" field, picking the exact suggestion when there is one.
+- `docs/reach.md` and a "Reach" section in SKILL.md: what Meta confirmed about ranking, what
+  practitioners report, and what measured runs showed.
+
 ## 1.7.0
 
 - `post.mjs --image` takes several images (comma list or repeated flag) and posts them as a
