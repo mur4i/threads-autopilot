@@ -2,7 +2,7 @@
 
 ## 1.11.0
 
-- `kpi.mjs` keeps a daily history per account and exports `posts.json` and `followers.json` for a
+- `kpi.mjs` keeps a daily history per account, writes a local `dashboard.html` and exports `posts.json` and `followers.json` for a
   dashboard; `docs/kpi.md` has the indicators, their bands and the format verdict.
 - `stats.mjs --json` rows also carry `chars` (rough text size) and `images` (media count).
 

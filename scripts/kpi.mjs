@@ -51,7 +51,7 @@ for (const f of fs.readdirSync(DIR).filter((f) => f.endsWith('.json') && f !== '
   for (const [d, n] of Object.entries(hist.followers)) followers.push({ account, day: d, followers: n })
   for (const r of Object.values(hist.posts)) {
     const at = new Date(r.time)
-    posts.push({ account, url: r.url, posted: r.time, day: day(at), hour: at.getHours(), format: format(r), text: r.text, views: r.views, likes: r.likes, replies: r.replies, reposts: r.reposts, shares: r.shares, checked: r.checked })
+    posts.push({ account, url: r.url, posted: r.time, day: day(at), hour: at.getHours(), format: format(r), text: String(r.text).replace(/^\d+\s*(min|h|d|sem)\s+/, ''), views: r.views, likes: r.likes, replies: r.replies, reposts: r.reposts, shares: r.shares, checked: r.checked })
   }
 }
 posts.sort((a, b) => b.posted.localeCompare(a.posted))
@@ -59,4 +59,10 @@ followers.sort((a, b) => a.account.localeCompare(b.account) || a.day.localeCompa
 fs.mkdirSync(out, { recursive: true })
 fs.writeFileSync(path.join(out, 'posts.json'), JSON.stringify(posts))
 fs.writeFileSync(path.join(out, 'followers.json'), JSON.stringify(followers))
+// Data goes inside the page, so it opens from disk with nothing loaded from the internet.
+const template = fs.readFileSync(path.join(path.dirname(fileURLToPath(import.meta.url)), 'dashboard.html'), 'utf8')
+const json = (v) => JSON.stringify(v).replace(/</g, '\\u003c')
+const page = template.replace('/*POSTS*/[]', () => json(posts)).replace('/*FOLLOWERS*/[]', () => json(followers)).replace("/*UPDATED*/''", () => json(new Date().toISOString()))
+fs.writeFileSync(path.join(out, 'dashboard.html'), page)
 console.log(`EXPORTED ${posts.length} posts, ${followers.length} follower days -> ${out}`)
+console.log('DASHBOARD ' + path.join(out, 'dashboard.html'))

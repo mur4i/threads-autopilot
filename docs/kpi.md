@@ -9,6 +9,7 @@ node scripts/kpi.mjs                                             # export only
 
 - History: `~/.config/threads-autopilot/kpi/<user>.json` (followers per day, latest numbers per post).
   Override the folder with `KPI_DIR`.
+- Dashboard: `kpi/dashboard.html`, one file with the data inside, opened from disk (loads nothing from the internet). Rewritten on every run.
 - Export: `posts.json` (account, url, posted, day, hour, format, text, views, likes, replies,
   reposts, shares, checked) and `followers.json` (account, day, followers), every account in the folder.
 - Run it once a day per account. The follower trend only exists from the first run on.
