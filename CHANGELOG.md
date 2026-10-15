@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.11.0
+
+- `kpi.mjs` keeps a daily history per account and exports `posts.json` and `followers.json` for a
+  dashboard; `docs/kpi.md` has the indicators, their bands and the format verdict.
+- `stats.mjs --json` rows also carry `chars` (rough text size) and `images` (media count).
+
 ## 1.10.0
 
 - `activity.mjs` lists the newest replies left on any of your posts (Activity > Replies), with the

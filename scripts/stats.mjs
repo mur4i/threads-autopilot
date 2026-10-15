@@ -36,8 +36,10 @@ function readPost() {
   const views = document.body.innerText.match(/([\d.,]+(?:\s*(?:mil|mi|k|m))?)\s+(?:visualizaç|views?\b)/i)?.[1] || '0'
   const id = post?.querySelector('time[datetime]')?.closest('a')?.getAttribute('href')?.match(/\/post\/([^/?]+)/)?.[1] || ''
   const time = post?.querySelector('time[datetime]')?.getAttribute('datetime') || ''
-  const text = (post?.innerText || '').split('\n').slice(2).join(' ').replace(/\s+/g, ' ').slice(0, 80)
-  return { id, views, likes: count(/^(Curtir|Like|Descurtir|Unlike)$/), replies: count(/^(Responder|Reply)$/), reposts: count(/^(Repostar|Repost)$/), shares: count(/^(Compartilhar|Share)$/), time, text }
+  const full = (post?.innerText || '').split('\n').slice(2).join(' ').replace(/\s+/g, ' ')
+  // Rough size (it includes the action counts): enough to tell a one-line phrase from a story.
+  const images = post?.querySelectorAll('picture img, img[sizes]').length || 0
+  return { id, views, likes: count(/^(Curtir|Like|Descurtir|Unlike)$/), replies: count(/^(Responder|Reply)$/), reposts: count(/^(Repostar|Repost)$/), shares: count(/^(Compartilhar|Share)$/), time, text: full.slice(0, 80), chars: full.length, images }
 }
 
 async function statsOf(url) {
@@ -50,7 +52,7 @@ async function statsOf(url) {
   }
   // A reply's page shows the root post first: different id means this url is a reply, not a post.
   const reply = raw.id && !url.includes('/post/' + raw.id)
-  return { reply, url, time: raw.time, text: raw.text, views: parseCount(raw.views), likes: parseCount(raw.likes), replies: parseCount(raw.replies), reposts: parseCount(raw.reposts), shares: parseCount(raw.shares) }
+  return { reply, url, time: raw.time, text: raw.text, chars: raw.chars, images: raw.images, views: parseCount(raw.views), likes: parseCount(raw.likes), replies: parseCount(raw.replies), reposts: parseCount(raw.reposts), shares: parseCount(raw.shares) }
 }
 
 async function profilePosts(user) {

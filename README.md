@@ -59,6 +59,7 @@ The agent runs these for you; see [SKILL.md](SKILL.md) for the details it follow
 | `post.mjs "text" [--image a.png,b.png] [--topic "Name"] [--schedule "DD/MM HH:MM"] [--dry]` | Posts text, optionally with one image or a carousel and a topic tag, now or scheduled on Threads |
 | `reply.mjs <url or @user> "text" [--dry]` | Replies to a post, or to someone's latest post |
 | `stats.mjs <url or @user> [--since DD/MM] [--limit N]` | Views, likes, replies and reposts of a post or of recent posts, plus the follower count |
+| `kpi.mjs [@user] [--days 7]` | Keeps a daily history per account (followers, post numbers, format) and exports it for a dashboard; see [docs/kpi.md](docs/kpi.md) |
 | `comments.mjs <url> [--limit N]` | Replies under a post, most liked first, to pick which ones to answer |
 | `activity.mjs [--limit N] [--json out.json]` | Newest replies left on any of your posts, from the Activity page |
 | `queue.mjs a.txt b.txt ... [--gap 5-15] [--start HH:MM]` | Posts several texts in a row with a random gap, from a start time |

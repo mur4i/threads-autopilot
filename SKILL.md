@@ -113,6 +113,10 @@ made on its own posts are skipped in profile mode. Use it to see which posts are
 
 Profile mode also prints the follower count first (`@user: N followers`).
 
+To track an account over time (followers per day, format verdicts, best hour), run
+`node scripts/kpi.mjs @user` once a day: indicators, bands and what to do with them are in
+[docs/kpi.md](docs/kpi.md).
+
 ## Comments
 
 ```bash
