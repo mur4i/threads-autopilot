@@ -183,6 +183,17 @@ node scripts/interact.mjs <post url> --like --repost
 
 Acts on the main post of the page and skips what is already done.
 
+## Profile link
+
+```bash
+node scripts/links.mjs @user                                  # shows the profile links
+node scripts/links.mjs @user https://new.link/path            # previews the swap of the first link
+node scripts/links.mjs @user https://new.link/path --save     # saves it and prints the link the profile shows
+```
+
+Changes account content: confirm with the user first unless they handed the profile over. The edit
+dialog ignores synthetic `.click()`, so the script clicks with real mouse events.
+
 ## Delete a post
 
 ```bash
